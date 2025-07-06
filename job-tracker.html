@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Application Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      margin: 0;
+      background-color: #f4f6fa;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1976d2;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    select, input[type="text"], button {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      min-width: 160px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #1976d2;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0d47a1;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      min-height: 100px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid #d0d0d0;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: #1976d2;
+    }
+
+    .card h2 {
+      font-size: 20px;
+      margin: 0 0 10px;
+      color: #333;
+    }
+
+    .info {
+      font-size: 16px;
+      margin: 6px 0;
+    }
+
+    .link {
+      margin-top: 12px;
+      display: inline-block;
+      color: #1976d2;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .no-jobs {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 18px;
+      color: #999;
+      padding: 40px 0;
+    }
+
+    @media (max-width: 480px) {
+      select, input[type="text"], button {
+        font-size: 15px;
+        min-width: 100%;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📌 Job Application Tracker</h1>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="🔍 Search jobs..." />
+    <select id="monthFilter">
+      <option value="">Month</option>
+      <option value="January">January</option>
+      <option value="February">February</option>
+      <option value="March">March</option>
+      <option value="April">April</option>
+      <option value="May">May</option>
+      <option value="June">June</option>
+      <option value="July">July</option>
+      <option value="August">August</option>
+      <option value="September">September</option>
+      <option value="October">October</option>
+      <option value="November">November</option>
+      <option value="December">December</option>
+    </select>
+    <select id="yearFilter">
+      <option value="">Year</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+    </select>
+    <button onclick="downloadPDF()">📄 Export PDF</button>
+  </div>
+
+  <div class="container" id="jobCards"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const jobApplications = [
+      {
+        company: "Google",
+        position: "Frontend Developer",
+        date: "2025-05-20",
+        status: "Applied",
+        location: "Remote",
+        url: "https://careers.google.com/jobs/results/"
+      },
+      {
+        company: "TCS",
+        position: "Java Developer",
+        date: "2025-06-12",
+        status: "Interview Scheduled",
+        location: "Kolkata",
+        url: "https://www.tcs.com/careers"
+      },
+      {
+        company: "Infosys",
+        position: "Python Developer",
+        date: "2025-06-29",
+        status: "Pending",
+        location: "Hyderabad",
+        url: "https://www.infosys.com/careers/"
+      },
+      {
+        company: "Wipro",
+        position: "Frontend Developer",
+        date: "2025-06-10",
+        status: "Applied",
+        location: "Bangalore",
+        url: "https://careers.wipro.com/"
+      },
+      {
+        company: "Capgemini",
+        position: "Full Stack Developer",
+        date: "2025-04-21",
+        status: "Rejected",
+        location: "Chennai",
+        url: "https://www.capgemini.com/careers/"
+      }
+    ];
+
+    const jobCards = document.getElementById('jobCards');
+    const searchInput = document.getElementById('searchInput');
+    const monthFilter = document.getElementById('monthFilter');
+    const yearFilter = document.getElementById('yearFilter');
+
+    // This will hold the filtered list for UI & PDF
+    let filteredJobs = [...jobApplications];
+
+    function renderJobs(data) {
+      jobCards.innerHTML = '';
+
+      if (data.length === 0) {
+        jobCards.innerHTML = `<div class="no-jobs">No Jobs Found</div>`;
+        return;
+      }
+
+      data.forEach(job => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2>${job.position}</h2>
+          <div class="info"><strong>Company:</strong> ${job.company}</div>
+          <div class="info"><strong>Date:</strong> ${new Date(job.date).toDateString()}</div>
+          <div class="info"><strong>Status:</strong> ${job.status}</div>
+          <div class="info"><strong>Location:</strong> ${job.location}</div>
+          <a href="${job.url}" target="_blank" class="link">View Job</a>
+        `;
+        jobCards.appendChild(card);
+      });
+    }
+
+    function filterJobs() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedMonth = monthFilter.value;
+      const selectedYear = yearFilter.value;
+
+      let filtered = jobApplications.filter(job => {
+        const date = new Date(job.date);
+        const month = date.toLocaleString('default', { month: 'long' });
+        const year = date.getFullYear().toString();
+
+        const matchesMonth = !selectedMonth || month === selectedMonth;
+        const matchesYear = !selectedYear || year === selectedYear;
+        const matchesSearch = [job.company, job.position, job.status, job.location]
+          .some(field => field.toLowerCase().includes(searchTerm));
+
+        return matchesMonth && matchesYear && matchesSearch;
+      });
+
+      filteredJobs = filtered;
+      renderJobs(filtered);
+    }
+
+    searchInput.addEventListener('input', filterJobs);
+    monthFilter.addEventListener('change', filterJobs);
+    yearFilter.addEventListener('change', filterJobs);
+
+    async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  let y = 30;
+  let currentPage = 1;
+
+  const totalPages = Math.ceil(filteredJobs.length / 4) || 1; // 4 jobs per page max
+  const today = new Date().toLocaleDateString();
+
+  function addHeader() {
+    doc.setFontSize(16);
+    doc.setTextColor(33, 150, 243);
+    doc.text("My Job Applications", pageWidth / 2, 15, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Provided by Pranab Mahata", pageWidth / 2, 22, { align: 'center' });
+
+    // Page border
+    doc.setDrawColor(180);
+    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+  }
+
+  function addFooter() {
+    doc.setFontSize(10);
+    doc.setTextColor(120);
+    doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    doc.text(`Generated on: ${today}`, 14, pageHeight - 10);
+  }
+
+  function addJobCard(job, posY) {
+    doc.setDrawColor(220);
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(15, posY, pageWidth - 30, 50, 3, 3, 'FD');
+
+    let innerY = posY + 7;
+    const leftX = 18;
+
+    doc.setFontSize(13);
+    doc.setTextColor(0);
+    doc.text(`${job.position}`, leftX, innerY); innerY += 7;
+
+    doc.setFontSize(11);
+    doc.setTextColor(80);
+    doc.text(`Company: ${job.company}`, leftX, innerY); innerY += 6;
+    doc.text(`Date: ${new Date(job.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`, leftX, innerY); innerY += 6;
+    doc.text(`Status: ${job.status}`, leftX, innerY); innerY += 6;
+    doc.text(`Location: ${job.location}`, leftX, innerY); innerY += 6;
+
+    // Link
+    doc.setTextColor(33, 150, 243);
+    doc.textWithLink("View Job", leftX, innerY, { url: job.url });
+  }
+
+  addHeader();
+
+  if (filteredJobs.length === 0) {
+    doc.setFontSize(14);
+    doc.setTextColor(150, 0, 0);
+    doc.text("No job data to export based on current filters.", pageWidth / 2, y + 10, { align: 'center' });
+  } else {
+    for (let i = 0; i < filteredJobs.length; i++) {
+      if (y > 230) {
+        addFooter();
+        doc.addPage();
+        currentPage++;
+        y = 30;
+        addHeader();
+      }
+      addJobCard(filteredJobs[i], y);
+      y += 60;
+    }
+  }
+
+  addFooter();
+  doc.save('job_applications.pdf');
+}
+
+
+    // Initial render
+    renderJobs(jobApplications);
+  </script>
+
+</body>
+</html>
