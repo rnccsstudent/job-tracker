@@ -5,65 +5,130 @@
   <title>🔐 Job Tracker Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --primary: #1976d2;
+      --dark: #0d47a1;
+      --bg: #f0f4f8;
+      --white: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background-color: var(--white);
+      padding: 30px 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px var(--shadow);
+      width: 100%;
+      max-width: 350px;
+      border: 4px solid var(--primary);
+      text-align: center;
     }
 
     h2 {
-      color: #1976d2;
-      margin-bottom: 20px;
-    }
+  margin: 0 0 25px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e88e5;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  text-transform: uppercase;
+}
 
-    input {
+@keyframes colorCycle {
+  0%   { color: #e91e63; }
+  20%  { color: #9c27b0; }
+  40%  { color: #3f51b5; }
+  60%  { color: #2196f3; }
+  80%  { color: #4caf50; }
+  100% { color: #e91e63; }
+}
+
+.main-title {
+  margin: 0 0 25px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  text-transform: uppercase;
+  animation: colorCycle 5s infinite;
+}
+
+
+
+    input[type="password"],
+    input[type="text"] {
+      width: 90%;
       padding: 12px;
+      margin-bottom: 12px;
       font-size: 16px;
-      width: 260px;
-      border-radius: 8px;
       border: 1px solid #ccc;
-      margin-bottom: 10px;
+      border-radius: 8px;
     }
 
     button {
-      margin-top: 15px;
-      padding: 10px 25px;
-      background-color: #1976d2;
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
       color: white;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #0d47a1;
+      background-color: var(--dark);
     }
 
     label {
       font-size: 14px;
-      color: #333;
+      color: #555;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .footer-note {
+      font-size: 13px;
+      color: #999;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .login-box {
+        margin: 10px;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <h2>🔐 Job Tracker</h2>
-  <input type="password" id="password" placeholder="Enter password" />
-  <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
-  <button onclick="checkPassword()">Login</button>
+  <div class="login-box">
+    <h2 class="main-title">🚀 Job Tracker</h2>
+    <input type="password" id="password" placeholder="Enter Password" />
+    <label><input type="checkbox" onclick="togglePassword()" /> Show Password</label>
+    <button onclick="checkPassword()">Login</button>
+    <div class="footer-note">For authorized users only 🔐</div>
+  </div>
 
   <script>
-    const correctPassword = "PranabMahata"; // ✅ Set your password here
+    const correctPassword = "PranabMahata"; // Set your password here
 
     function checkPassword() {
       const pwd = document.getElementById("password").value;
       if (pwd === correctPassword) {
-        window.location.href = "job-tracker.html"; // ✅ Open your tracker
+        window.location.href = "job-tracker.html";
       } else {
         alert("❌ Wrong password!");
       }
