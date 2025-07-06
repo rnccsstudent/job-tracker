@@ -127,7 +127,10 @@
 
     function checkPassword() {
       const pwd = document.getElementById("password").value;
+      const correctPassword = "PranabMahata"; // ✅ Change as needed
+
       if (pwd === correctPassword) {
+        localStorage.setItem("isAuthenticated", "true");
         window.location.href = "job-tracker.html";
       } else {
         alert("❌ Wrong password!");
@@ -137,6 +140,11 @@
     function togglePassword() {
       const input = document.getElementById("password");
       input.type = input.type === "password" ? "text" : "password";
+    }
+
+    // Auto redirect if already logged in
+    if (localStorage.getItem("isAuthenticated") === "true") {
+      window.location.href = "job-tracker.html";
     }
   </script>
 </body>
