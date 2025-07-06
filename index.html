@@ -95,40 +95,7 @@
   </div>
 
   <script>
-    const hashedPassword = "eb0c8059d71089b61c6b628f2ea87c5d31fb1367556e44a2bf35e6c4fa7644f7"; 
-
-    async function sha256(text) {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(text);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    async function checkPassword() {
-      const input = document.getElementById("password").value.trim();
-      const hash = await sha256(input);
-
-      console.log("Entered Password:", input);
-      console.log("Hashed Input:", hash);
-      console.log("Expected Hash:", hashedPassword);
-
-      if (hash === hashedPassword) {
-        localStorage.setItem("isAuthenticated", "true");
-        window.location.href = "job-tracker.html";
-      } else {
-        alert("❌ Wrong password!");
-      }
-    }
-
-    function togglePassword() {
-      const input = document.getElementById("password");
-      input.type = input.type === "password" ? "text" : "password";
-    }
-
-    if (localStorage.getItem("isAuthenticated") === "true") {
-      window.location.href = "job-tracker.html";
-    }
+   const _0x4125c6=_0x696c;function _0x696c(_0x64e709,_0x55d9ba){const _0x82e8b=_0x82e8();return _0x696c=function(_0x696cfe,_0x2c67e5){_0x696cfe=_0x696cfe-0x174;let _0x41fd5c=_0x82e8b[_0x696cfe];return _0x41fd5c;},_0x696c(_0x64e709,_0x55d9ba);}(function(_0x2f2ea9,_0x420dab){const _0x10a97f=_0x696c,_0x29e4e3=_0x2f2ea9();while(!![]){try{const _0x1dcb13=parseInt(_0x10a97f(0x18d))/0x1*(parseInt(_0x10a97f(0x183))/0x2)+parseInt(_0x10a97f(0x17b))/0x3+parseInt(_0x10a97f(0x193))/0x4+-parseInt(_0x10a97f(0x181))/0x5*(-parseInt(_0x10a97f(0x177))/0x6)+parseInt(_0x10a97f(0x189))/0x7+parseInt(_0x10a97f(0x191))/0x8+-parseInt(_0x10a97f(0x18b))/0x9*(parseInt(_0x10a97f(0x178))/0xa);if(_0x1dcb13===_0x420dab)break;else _0x29e4e3['push'](_0x29e4e3['shift']());}catch(_0x4706dd){_0x29e4e3['push'](_0x29e4e3['shift']());}}}(_0x82e8,0x4fc72));const hashedPassword=_0x4125c6(0x175);function _0x82e8(){const _0x3fccb5=['text','from','log','1763874qAmACX','href','2493evDMQH','getItem','25470HybGgJ','location','Entered\x20Password:','type','4688496AwJTGO','toString','532704rzTGfS','join','Expected\x20Hash:','setItem','eb0c8059d71089b61c6b628f2ea87c5d31fb1367556e44a2bf35e6c4fa7644f7','isAuthenticated','6vRYObf','64060eeWIyh','digest','❌\x20Wrong\x20password!','281475FIqIYq','subtle','map','encode','password','padStart','3015985EMTXqO','getElementById','34WatdWn','true','job-tracker.html'];_0x82e8=function(){return _0x3fccb5;};return _0x82e8();}async function sha256(_0x6b9bb8){const _0x525fe0=_0x4125c6,_0x20d557=new TextEncoder(),_0x2a46a9=_0x20d557[_0x525fe0(0x17e)](_0x6b9bb8),_0x52d56c=await crypto[_0x525fe0(0x17c)][_0x525fe0(0x179)]('SHA-256',_0x2a46a9),_0x1c45ff=Array[_0x525fe0(0x187)](new Uint8Array(_0x52d56c));return _0x1c45ff[_0x525fe0(0x17d)](_0x908162=>_0x908162[_0x525fe0(0x192)](0x10)[_0x525fe0(0x180)](0x2,'0'))[_0x525fe0(0x194)]('');}async function checkPassword(){const _0x68f496=_0x4125c6,_0x44b18d=document[_0x68f496(0x182)](_0x68f496(0x17f))['value']['trim'](),_0x2c4b61=await sha256(_0x44b18d);console[_0x68f496(0x188)](_0x68f496(0x18f),_0x44b18d),console[_0x68f496(0x188)]('Hashed\x20Input:',_0x2c4b61),console[_0x68f496(0x188)](_0x68f496(0x195),hashedPassword),_0x2c4b61===hashedPassword?(localStorage[_0x68f496(0x174)](_0x68f496(0x176),_0x68f496(0x184)),window[_0x68f496(0x18e)][_0x68f496(0x18a)]=_0x68f496(0x185)):alert(_0x68f496(0x17a));}function togglePassword(){const _0x3eaaee=_0x4125c6,_0x501ab6=document[_0x3eaaee(0x182)](_0x3eaaee(0x17f));_0x501ab6[_0x3eaaee(0x190)]=_0x501ab6[_0x3eaaee(0x190)]===_0x3eaaee(0x17f)?_0x3eaaee(0x186):_0x3eaaee(0x17f);}localStorage[_0x4125c6(0x18c)](_0x4125c6(0x176))===_0x4125c6(0x184)&&(window['location'][_0x4125c6(0x18a)]=_0x4125c6(0x185));
   </script>
 </body>
 </html>
