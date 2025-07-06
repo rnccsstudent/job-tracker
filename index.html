@@ -36,35 +36,33 @@
     }
 
     h2 {
-  margin: 0 0 25px;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1e88e5;
-  letter-spacing: 2px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-  text-transform: uppercase;
-}
+      margin: 0 0 25px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #1e88e5;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      text-transform: uppercase;
+    }
 
-@keyframes colorCycle {
-  0%   { color: #e91e63; }
-  20%  { color: #9c27b0; }
-  40%  { color: #3f51b5; }
-  60%  { color: #2196f3; }
-  80%  { color: #4caf50; }
-  100% { color: #e91e63; }
-}
+    @keyframes colorCycle {
+      0%   { color: #e91e63; }
+      20%  { color: #9c27b0; }
+      40%  { color: #3f51b5; }
+      60%  { color: #2196f3; }
+      80%  { color: #4caf50; }
+      100% { color: #e91e63; }
+    }
 
-.main-title {
-  margin: 0 0 25px;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-  text-transform: uppercase;
-  animation: colorCycle 5s infinite;
-}
-
-
+    .main-title {
+      margin: 0 0 25px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      text-transform: uppercase;
+      animation: colorCycle 5s infinite;
+    }
 
     input[type="password"],
     input[type="text"] {
@@ -123,48 +121,35 @@
   </div>
 
   <script>
-  (function () {
-    const _0x5aeec2 = {
-      'PqWGl': function (a, b) { return a === b; },
-      'ERdpt': 'true',
-      'RyFvv': 'job-tracker.html',
-      'tMTRa': 'password',
-      'ovduE': 'isAuthenticated',
-      'ZcFeB': '❌ Wrong password!',
-      'GdYia': 'SHA-256',
-      'NShtF': 'getElementById'
-    };
-const _0x2902b5 = 'f979263e134f325733b2b476d7b52be8f47f88155f86c03b8412f2945bb2bddd';
+    const hashedPassword = "f979263e134f325733b2b476d7b52be8f47f88155f86c03b8412f2945bb2bddd"; 
 
-
-    async function _sha256(text) {
+    async function sha256(text) {
       const data = new TextEncoder().encode(text);
-      const hashBuffer = await crypto.subtle.digest(_0x5aeec2.GdYia, data);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    window.checkPassword = async function () {
-      const input = document[_0x5aeec2.NShtF](_0x5aeec2.tMTRa).value;
-      const hash = await _sha256(input);
-      if (_0x5aeec2.PqWGl(hash, _0x2902b5)) {
-        localStorage.setItem(_0x5aeec2.ovduE, _0x5aeec2.ERdpt);
-        window.location.href = _0x5aeec2.RyFvv;
+    async function checkPassword() {
+      const input = document.getElementById("password").value.trim();
+      const inputHash = await sha256(input);
+
+      if (inputHash === hashedPassword) {
+        localStorage.setItem("isAuthenticated", "true");
+        window.location.href = "job-tracker.html";
       } else {
-        alert(_0x5aeec2.ZcFeB);
+        alert("❌ Wrong password!");
       }
-    };
-
-    window.togglePassword = function () {
-      const input = document.getElementById(_0x5aeec2.tMTRa);
-      input.type = input.type === 'password' ? 'text' : 'password';
-    };
-
-    if (localStorage.getItem(_0x5aeec2.ovduE) === _0x5aeec2.ERdpt) {
-      window.location.href = _0x5aeec2.RyFvv;
     }
-  })();
-</script>
 
+    function togglePassword() {
+      const input = document.getElementById("password");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    if (localStorage.getItem("isAuthenticated") === "true") {
+      window.location.href = "job-tracker.html";
+    }
+  </script>
 </body>
 </html>
