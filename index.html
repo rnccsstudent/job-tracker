@@ -123,29 +123,49 @@
   </div>
 
   <script>
-    const correctPassword = "PranabMahata"; // Set your password here
+  (function () {
+    const _0x5aeec2 = {
+      'PqWGl': function (_0x214c7e, _0x35583b) {
+        return _0x214c7e === _0x35583b;
+      },
+      'ERdpt': 'true',
+      'RyFvv': 'job-tracker.html',
+      'tMTRa': 'password',
+      'ovduE': 'isAuthenticated',
+      'ZcFeB': '❌ Wrong password!',
+      'GdYia': 'SHA-256',
+      'NShtF': 'getElementById'
+    };
+    const _0x2902b5 = 'f979263e134f325733b2b476d7b52be8f47f88155f86c03b8412f2945bb2bddd';
 
-    function checkPassword() {
-      const pwd = document.getElementById("password").value;
-      const correctPassword = "PranabMahata"; // ✅ Change as needed
+    async function _sha256(_0x10780d) {
+      const _0x24994c = new TextEncoder()['encode'](_0x10780d);
+      const _0x229f70 = await crypto['subtle']['digest'](_0x5aeec2['GdYia'], _0x24994c);
+      const _0x4076fa = Array['from'](new Uint8Array(_0x229f70));
+      return _0x4076fa ['padStart'](2, '0'))['join']('');
+    }
 
-      if (pwd === correctPassword) {
-        localStorage.setItem("isAuthenticated", "true");
-        window.location.href = "job-tracker.html";
+    window['checkPassword'] = async function () {
+      const _0x3409b1 = document[_0x5aeec2['NShtF']](_0x5aeec2['tMTRa'])['value'];
+      const _0x51767a = await _sha256(_0x3409b1);
+      if (_0x5aeec2['PqWGl'](_0x51767a, _0x2902b5)) {
+        localStorage['setItem'](_0x5aeec2['ovduE'], _0x5aeec2['ERdpt']);
+        window['location']['href'] = _0x5aeec2['RyFvv'];
       } else {
-        alert("❌ Wrong password!");
+        alert(_0x5aeec2['ZcFeB']);
       }
-    }
+    };
 
-    function togglePassword() {
-      const input = document.getElementById("password");
-      input.type = input.type === "password" ? "text" : "password";
-    }
+    window['togglePassword'] = function () {
+      const _0x2131b4 = document['getElementById'](_0x5aeec2['tMTRa']);
+      _0x2131b4['type'] = _0x2131b4['type'] === 'password' ? 'text' : 'password';
+    };
 
-    // Auto redirect if already logged in
-    if (localStorage.getItem("isAuthenticated") === "true") {
-      window.location.href = "job-tracker.html";
+    if (localStorage['getItem'](_0x5aeec2['ovduE']) === _0x5aeec2['ERdpt']) {
+      window['location']['href'] = _0x5aeec2['RyFvv'];
     }
-  </script>
+  })();
+</script>
+
 </body>
 </html>
