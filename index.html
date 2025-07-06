@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Welcome to Job Tracker</title>
+  <title>🔐 Job Tracker Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -14,37 +14,65 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-      padding: 20px;
     }
 
-    h1 {
+    h2 {
       color: #1976d2;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 16px;
+      width: 260px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       margin-bottom: 10px;
     }
 
-    p {
-      font-size: 18px;
-      color: #333;
-    }
-
-    a {
-      margin-top: 20px;
+    button {
+      margin-top: 15px;
       padding: 10px 25px;
       background-color: #1976d2;
       color: white;
-      text-decoration: none;
+      border: none;
       border-radius: 8px;
       font-size: 16px;
+      cursor: pointer;
     }
 
-    a:hover {
+    button:hover {
       background-color: #0d47a1;
+    }
+
+    label {
+      font-size: 14px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>🔐 Job Application Tracker</h1>
-  <p>Click the button below to access your tracker.</p>
-  <a href="job-tracker.html">Go to Job Tracker</a>
+  <h2>🔐 Job Tracker</h2>
+  <input type="password" id="password" placeholder="Enter password" />
+  <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
+  <button onclick="checkPassword()">Login</button>
+
+  <script>
+    const correctPassword = "PranabMahata"; // ✅ Set your password here
+
+    function checkPassword() {
+      const pwd = document.getElementById("password").value;
+      if (pwd === correctPassword) {
+        window.location.href = "job-tracker.html"; // ✅ Open your tracker
+      } else {
+        alert("❌ Wrong password!");
+      }
+    }
+
+    function togglePassword() {
+      const input = document.getElementById("password");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+  </script>
 </body>
 </html>
