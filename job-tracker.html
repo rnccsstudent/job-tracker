@@ -5,38 +5,54 @@
   <title>Job Application Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --primary: #1976d2;
+      --background-light: #f4f6fa;
+      --background-dark: #121212;
+      --text-light: #333;
+      --text-dark: #e0e0e0;
+      --card-light: #ffffff;
+      --card-dark: #1e1e1e;
+      --selected-light: #00bcd4;
+      --selected-dark: #00e5ff;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
       margin: 0;
-      background-color: #f4f6fa;
-      color: #333;
+      padding: 20px;
+      background-color: var(--background-light);
+      color: var(--text-light);
+      transition: all 0.3s ease;
     }
 
-    h1 {
-      font-size: 24px;
+    body.dark {
+      background-color: var(--background-dark);
+      color: var(--text-dark);
+    }
+
+    .dark .card {
+      background-color: var(--card-dark);
+    }
+
+    h1.animated-heading {
+      font-size: 30px;
+      font-weight: 700;
       text-align: center;
       margin-bottom: 20px;
-      color: #1976d2;
+      animation: headingColorCycle 6s infinite;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
-    @keyframes headingColorCycle {
-  0%   { color: #e91e63; }
-  25%  { color: #3f51b5; }
-  50%  { color: #2196f3; }
-  75%  { color: #4caf50; }
-  100% { color: #e91e63; }
-}
 
-.animated-heading {
-  font-size: 30px;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 20px;
-  animation: headingColorCycle 6s infinite;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
+    @keyframes headingColorCycle {
+      0%   { color: #e91e63; }
+      25%  { color: #3f51b5; }
+      50%  { color: #2196f3; }
+      75%  { color: #4caf50; }
+      100% { color: #e91e63; }
+    }
 
     .controls {
       display: flex;
@@ -56,7 +72,7 @@
     }
 
     button {
-      background: #1976d2;
+      background: var(--primary);
       color: white;
       border: none;
       cursor: pointer;
@@ -74,23 +90,29 @@
     }
 
     .card {
-      background: white;
+      background: var(--card-light);
       padding: 20px;
       border-radius: 12px;
       border: 2px solid #d0d0d0;
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s;
+      transition: transform 0.3s, border-color 0.3s;
     }
 
     .card:hover {
       transform: translateY(-5px);
-      border-color: #1976d2;
+      border-color: var(--primary);
     }
 
-    .card h2 {
-      font-size: 20px;
-      margin: 0 0 10px;
-      color: #333;
+    .card.selected {
+      border: 2px solid var(--selected-light);
+      box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+      background-color: rgba(0, 188, 212, 0.05);
+    }
+
+    .dark .card.selected {
+      border-color: var(--selected-dark);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+      background-color: rgba(0, 229, 255, 0.08);
     }
 
     .info {
@@ -101,7 +123,7 @@
     .link {
       margin-top: 12px;
       display: inline-block;
-      color: #1976d2;
+      color: var(--primary);
       font-weight: bold;
       text-decoration: none;
     }
@@ -118,14 +140,32 @@
       padding: 40px 0;
     }
 
+    #totalJobs {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px; /* 👈 added space below */
+      font-size: 16px;
+      color: #555;
+    }
+
+    .dark-toggle {
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 999;
+  transition: background-color 0.3s;
+  min-width: 0px;
+}
+
+.dark-toggle:hover {
+  background-color: rgba(25, 118, 210, 0.15);
+}
+
+
     @media (max-width: 480px) {
       select, input[type="text"], button {
         font-size: 15px;
         min-width: 100%;
-      }
-
-      h1 {
-        font-size: 20px;
       }
 
       .controls {
@@ -136,8 +176,19 @@
   </style>
 </head>
 <body>
+  <script>
+  // 🔐 Redirect to home if not logged in
+  if (localStorage.getItem("isAuthenticated") !== "true") {
+    window.location.href = "/";
+  }
 
-<h1 class="animated-heading">📌Job-Tracker</h1>
+  // 🌙 Set dark mode if previously enabled
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+  }
+</script>
+  <h1 class="animated-heading">📌 Job Tracker <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Light/Dark Mode">🌓</button></h1>
+
   <div class="controls">
     <input type="text" id="searchInput" placeholder="🔍 Search jobs..." />
     <select id="monthFilter">
@@ -163,8 +214,8 @@
     <button onclick="downloadPDF()">📄 Export PDF</button>
   </div>
 
+  <div id="totalJobs"></div>
   <div class="container" id="jobCards"></div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const jobApplications = [
@@ -214,17 +265,100 @@
     const searchInput = document.getElementById('searchInput');
     const monthFilter = document.getElementById('monthFilter');
     const yearFilter = document.getElementById('yearFilter');
+    const totalJobs = document.getElementById('totalJobs');
+    let filteredJobs = [...jobApplications]; // Global variable to track filtered jobs
 
-    // This will hold the filtered list for UI & PDF
-    let filteredJobs = [...jobApplications];
+    function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+}
 
+    async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    let y = 30;
+    let currentPage = 1;
+
+    const totalPages = Math.ceil(filteredJobs.length / 4) || 1;
+    const today = new Date().toLocaleDateString();
+
+    function addHeader() {
+      doc.setFontSize(16);
+      doc.setTextColor(33, 150, 243);
+      doc.text("My Job Applications", pageWidth / 2, 15, { align: 'center' });
+
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text("Provided by Pranab Mahata", pageWidth / 2, 22, { align: 'center' });
+
+      doc.setDrawColor(180);
+      doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
+    }
+
+    function addFooter() {
+      doc.setFontSize(10);
+      doc.setTextColor(120);
+      doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+      doc.text(`Generated on: ${today}`, 14, pageHeight - 10);
+    }
+
+    function addJobCard(job, posY) {
+      doc.setDrawColor(220);
+      doc.setFillColor(245, 245, 245);
+      doc.roundedRect(15, posY, pageWidth - 30, 50, 3, 3, 'FD');
+
+      let innerY = posY + 7;
+      const leftX = 18;
+
+      doc.setFontSize(13);
+      doc.setTextColor(0);
+      doc.text(`${job.position}`, leftX, innerY); innerY += 7;
+
+      doc.setFontSize(11);
+      doc.setTextColor(80);
+      doc.text(`Company: ${job.company}`, leftX, innerY); innerY += 6;
+      doc.text(`Date: ${new Date(job.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`, leftX, innerY); innerY += 6;
+      doc.text(`Status: ${job.status}`, leftX, innerY); innerY += 6;
+      doc.text(`Location: ${job.location}`, leftX, innerY); innerY += 6;
+
+      doc.setTextColor(33, 150, 243);
+      doc.textWithLink("View Job", leftX, innerY, { url: job.url });
+    }
+
+    addHeader();
+
+    if (filteredJobs.length === 0) {
+      doc.setFontSize(14);
+      doc.setTextColor(150, 0, 0);
+      doc.text("No job data to export based on current filters.", pageWidth / 2, y + 10, { align: 'center' });
+    } else {
+      for (let i = 0; i < filteredJobs.length; i++) {
+        if (y > 230) {
+          addFooter();
+          doc.addPage();
+          currentPage++;
+          y = 30;
+          addHeader();
+        }
+        addJobCard(filteredJobs[i], y);
+        y += 60;
+      }
+    }
+
+    addFooter();
+    doc.save('job_applications.pdf');
+  }
     function renderJobs(data) {
       jobCards.innerHTML = '';
 
       if (data.length === 0) {
-        jobCards.innerHTML = `<div class="no-jobs">No Jobs Found</div>`;
-        return;
-      }
+  jobCards.innerHTML = `<div class="no-jobs">No Jobs Found</div>`;
+  totalJobs.innerText = `Total Jobs: 0`; // 👈 added
+}
+
 
       data.forEach(job => {
         const card = document.createElement('div');
@@ -235,122 +369,45 @@
           <div class="info"><strong>Date:</strong> ${new Date(job.date).toDateString()}</div>
           <div class="info"><strong>Status:</strong> ${job.status}</div>
           <div class="info"><strong>Location:</strong> ${job.location}</div>
-          <a href="${job.url}" target="_blank" class="link">View Job</a>
+          <a href="${job.url}" target="_blank" rel="noopener noreferrer" class="link">View Job</a>
         `;
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+        });
         jobCards.appendChild(card);
       });
+
+      totalJobs.innerText = `Total Jobs: ${data.length}`;
     }
 
     function filterJobs() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const selectedMonth = monthFilter.value;
-      const selectedYear = yearFilter.value;
+  const searchTerm = searchInput.value.toLowerCase();
+  const selectedMonth = monthFilter.value;
+  const selectedYear = yearFilter.value;
 
-      let filtered = jobApplications.filter(job => {
-        const date = new Date(job.date);
-        const month = date.toLocaleString('default', { month: 'long' });
-        const year = date.getFullYear().toString();
+  filteredJobs = jobApplications.filter(job => {
+    const date = new Date(job.date);
+    const month = date.toLocaleString('default', { month: 'long' });
+    const year = date.getFullYear().toString();
 
-        const matchesMonth = !selectedMonth || month === selectedMonth;
-        const matchesYear = !selectedYear || year === selectedYear;
-        const matchesSearch = [job.company, job.position, job.status, job.location]
-          .some(field => field.toLowerCase().includes(searchTerm));
+    const matchesMonth = !selectedMonth || month === selectedMonth;
+    const matchesYear = !selectedYear || year === selectedYear;
+    const matchesSearch = [job.company, job.position, job.status, job.location]
+      .some(field => field.toLowerCase().includes(searchTerm));
 
-        return matchesMonth && matchesYear && matchesSearch;
-      });
+    return matchesMonth && matchesYear && matchesSearch;
+  });
 
-      filteredJobs = filtered;
-      renderJobs(filtered);
-    }
+  renderJobs(filteredJobs);
+}
+
 
     searchInput.addEventListener('input', filterJobs);
     monthFilter.addEventListener('change', filterJobs);
     yearFilter.addEventListener('change', filterJobs);
 
-    async function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  let y = 30;
-  let currentPage = 1;
-
-  const totalPages = Math.ceil(filteredJobs.length / 4) || 1; // 4 jobs per page max
-  const today = new Date().toLocaleDateString();
-
-  function addHeader() {
-    doc.setFontSize(16);
-    doc.setTextColor(33, 150, 243);
-    doc.text("My Job Applications", pageWidth / 2, 15, { align: 'center' });
-
-    doc.setFontSize(10);
-    doc.setTextColor(100);
-    doc.text("Provided by Pranab Mahata", pageWidth / 2, 22, { align: 'center' });
-
-    // Page border
-    doc.setDrawColor(180);
-    doc.rect(10, 10, pageWidth - 20, pageHeight - 20);
-  }
-
-  function addFooter() {
-    doc.setFontSize(10);
-    doc.setTextColor(120);
-    doc.text(`Page ${currentPage} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-    doc.text(`Generated on: ${today}`, 14, pageHeight - 10);
-  }
-
-  function addJobCard(job, posY) {
-    doc.setDrawColor(220);
-    doc.setFillColor(245, 245, 245);
-    doc.roundedRect(15, posY, pageWidth - 30, 50, 3, 3, 'FD');
-
-    let innerY = posY + 7;
-    const leftX = 18;
-
-    doc.setFontSize(13);
-    doc.setTextColor(0);
-    doc.text(`${job.position}`, leftX, innerY); innerY += 7;
-
-    doc.setFontSize(11);
-    doc.setTextColor(80);
-    doc.text(`Company: ${job.company}`, leftX, innerY); innerY += 6;
-    doc.text(`Date: ${new Date(job.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`, leftX, innerY); innerY += 6;
-    doc.text(`Status: ${job.status}`, leftX, innerY); innerY += 6;
-    doc.text(`Location: ${job.location}`, leftX, innerY); innerY += 6;
-
-    // Link
-    doc.setTextColor(33, 150, 243);
-    doc.textWithLink("View Job", leftX, innerY, { url: job.url });
-  }
-
-  addHeader();
-
-  if (filteredJobs.length === 0) {
-    doc.setFontSize(14);
-    doc.setTextColor(150, 0, 0);
-    doc.text("No job data to export based on current filters.", pageWidth / 2, y + 10, { align: 'center' });
-  } else {
-    for (let i = 0; i < filteredJobs.length; i++) {
-      if (y > 230) {
-        addFooter();
-        doc.addPage();
-        currentPage++;
-        y = 30;
-        addHeader();
-      }
-      addJobCard(filteredJobs[i], y);
-      y += 60;
-    }
-  }
-
-  addFooter();
-  doc.save('job_applications.pdf');
-}
-
-
-    // Initial render
     renderJobs(jobApplications);
   </script>
-
 </body>
 </html>
