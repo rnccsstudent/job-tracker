@@ -291,6 +291,11 @@
     const yearFilter = document.getElementById('yearFilter');
     const totalJobs = document.getElementById('totalJobs');
     let filteredJobs = [...jobApplications]; // Global variable to track filtered jobs
+    
+     function parseCustomDate(dateStr) {
+      const [day, month, year] = dateStr.split("-").map(Number);
+      return new Date(year, month - 1, day); // JS month is 0-indexed
+    }
 
     function toggleDarkMode() {
   document.body.classList.toggle('dark');
@@ -390,7 +395,7 @@
         card.innerHTML = `
           <h2>${job.position}</h2>
           <div class="info"><strong>Company:</strong> ${job.company}</div>
-          <div class="info"><strong>Date:</strong> ${new Date(job.date).toDateString()}</div>
+          <div class="info"><strong>Date:</strong> ${parseCustomDate(job.date).toDateString()}</div>
           <div class="info"><strong>Status:</strong> ${job.status}</div>
           <div class="info"><strong>Location:</strong> ${job.location}</div>
           <a href="${job.url}" target="_blank" rel="noopener noreferrer" class="link">View Job</a>
@@ -411,7 +416,7 @@
   const selectedYear = yearFilter.value;
 
   filteredJobs = jobApplications.filter(job => {
-    const date = new Date(job.date);
+    const date = parseCustomDate(job.date);
     const month = date.toLocaleString('default', { month: 'long' });
     const year = date.getFullYear().toString();
 
